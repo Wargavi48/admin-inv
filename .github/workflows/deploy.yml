@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      ADMIN_PASSWORD_HASH: ${{ secrets.ADMIN_PASSWORD_HASH }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject secrets into config.js
+        run: |
+          python - <<'PY'
+          import os, re
+          path = 'config.js'
+          with open(path, 'r', encoding='utf-8') as f:
+              content = f.read()
+          for token, env in {
+              '__SUPABASE_URL__': 'SUPABASE_URL',
+              '__SUPABASE_ANON_KEY__': 'SUPABASE_ANON_KEY',
+              '__ADMIN_PASSWORD_HASH__': 'ADMIN_PASSWORD_HASH',
+          }.items():
+              content = content.replace(token, os.environ.get(env, ''))
+          content = re.sub(r'__[A-Z][A-Z0-9_]*__', '', content)  # token tersisa -> kosong
+          with open(path, 'w', encoding='utf-8') as f:
+              f.write(content)
+
+      - name: Prepare artifact (remove git metadata)
+        run: rm -rf .git .github
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
