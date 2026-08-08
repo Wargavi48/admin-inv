@@ -29,10 +29,13 @@ const EVENT = {
   hostLogoHeight: 36,                 // tinggi logo kiri dalam px — ganti angka ini untuk memperbesar/perkecil
   brandLogoUrl: "asset/makeitMemaurable_log_logoo.png", // logo kanan atas (brand) — ganti path/URL kalau perlu
   brandLogoHeight: 72,                // tinggi logo kanan dalam px — ganti angka ini untuk memperbesar/perkecil
-  category: "Birthday",              // label pill kecil di slide pertama (contoh: Birthday, Event, Wedding)
-  eventName: "Fritzy 18th Birthday Project",
+  category: "Graduation",            // label pill kecil di slide pertama (contoh: Birthday, Event, Wedding)
+  eventName: "Graduation of Maura Nilambari",
   hostGreeting:
-    "You are warmly invited to attend the online graduation ceremony of yaya. As a valued part of this community, your presence would mean a great deal as we celebrate their journey and say farewell together.",
+    "You are warmly invited to attend the online graduation ceremony of",
+  honoreeName: "Maura Nilambari",
+  hostGreetingAfter:
+    "As a valued part of this community, your presence would mean a great deal as we celebrate their journey and say farewell together.",
   date: "Sunday, 9 August 2026",
   time: "19.19 WIB",
   place: "Watch on YouTube",
