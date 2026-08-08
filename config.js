@@ -41,7 +41,7 @@ const EVENT = {
   place: "Watch on YouTube",
   placeMapUrl: "https://www.youtube.com/live/2QxfnXY6OoA",
   closingMessage:
-    "Let us gather one final time to honor their memories and wish them the very best in their next chapter.",
+    "Let us gather one final time to #makeitMemaurable, honor their journey, and wish them the very best in their next chapter.",
   defaultGuestName: "Tamu Undangan", // dipakai kalau slug di URL tidak ditemukan di database
 };
 
