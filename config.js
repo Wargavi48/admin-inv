@@ -31,13 +31,14 @@ const EVENT = {
   brandLogoHeight: 72,                // tinggi logo kanan dalam px — ganti angka ini untuk memperbesar/perkecil
   category: "Birthday",              // label pill kecil di slide pertama (contoh: Birthday, Event, Wedding)
   eventName: "Fritzy 18th Birthday Project",
-  hostGreeting: "It is a pleasure to invite you to",
-  date: "Sunday, 2 August 2026",
-  time: "15.00 – 20.00",
-  place: "CGV fX Sudirman, Lt. 7",
-  placeMapUrl: "https://maps.google.com/?q=CGV+fX+Sudirman",
+  hostGreeting:
+    "You are warmly invited to attend the online graduation ceremony of yaya. As a valued part of this community, your presence would mean a great deal as we celebrate their journey and say farewell together.",
+  date: "Sunday, 9 August 2026",
+  time: "19.19 WIB",
+  place: "Watch on YouTube",
+  placeMapUrl: "https://www.youtube.com/live/2QxfnXY6OoA",
   closingMessage:
-    "We sincerely hope you can join us and create magic together on this special day.",
+    "Let us gather one final time to honor their memories and wish them the very best in their next chapter.",
   defaultGuestName: "Tamu Undangan", // dipakai kalau slug di URL tidak ditemukan di database
 };
 
