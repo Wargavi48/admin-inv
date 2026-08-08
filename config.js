@@ -28,7 +28,7 @@ const EVENT = {
   hostLogoUrl: "asset/Pictorial.png",                   // logo kiri atas (host) — ganti path/URL kalau perlu
   hostLogoHeight: 36,                 // tinggi logo kiri dalam px — ganti angka ini untuk memperbesar/perkecil
   brandLogoUrl: "asset/makeitMemaurable_log_logoo.png", // logo kanan atas (brand) — ganti path/URL kalau perlu
-  brandLogoHeight: 48,                // tinggi logo kanan dalam px — ganti angka ini untuk memperbesar/perkecil
+  brandLogoHeight: 72,                // tinggi logo kanan dalam px — ganti angka ini untuk memperbesar/perkecil
   category: "Birthday",              // label pill kecil di slide pertama (contoh: Birthday, Event, Wedding)
   eventName: "Fritzy 18th Birthday Project",
   hostGreeting: "It is a pleasure to invite you to",
