@@ -26,9 +26,9 @@ const EVENT = {
   hostTag: "Wargavi48",              // teks kecil kiri atas (dipakai kalau hostLogoUrl kosong)
   brandTag: "KodoknyaMaura",         // teks kecil kanan atas (dipakai kalau brandLogoUrl kosong)
   hostLogoUrl: "asset/Pictorial.png",                   // logo kiri atas (host) — ganti path/URL kalau perlu
-  hostLogoHeight: 28,                 // tinggi logo kiri dalam px — ganti angka ini untuk memperbesar/perkecil
+  hostLogoHeight: 36,                 // tinggi logo kiri dalam px — ganti angka ini untuk memperbesar/perkecil
   brandLogoUrl: "asset/makeitMemaurable_log_logoo.png", // logo kanan atas (brand) — ganti path/URL kalau perlu
-  brandLogoHeight: 28,                // tinggi logo kanan dalam px — ganti angka ini untuk memperbesar/perkecil
+  brandLogoHeight: 36,                // tinggi logo kanan dalam px — ganti angka ini untuk memperbesar/perkecil
   category: "Birthday",              // label pill kecil di slide pertama (contoh: Birthday, Event, Wedding)
   eventName: "Fritzy 18th Birthday Project",
   hostGreeting: "It is a pleasure to invite you to",
