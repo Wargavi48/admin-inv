@@ -38,7 +38,10 @@ jobs:
               '__ADMIN_PASSWORD_HASH__': 'ADMIN_PASSWORD_HASH',
           }.items():
               content = content.replace(token, os.environ.get(env, ''))
-          content = re.sub(r'__[A-Z][A-Z0-9_]*__', '', content)  # token tersisa -> kosong
+          # Bersihkan placeholder yang tersisa (kalau secret tidak di-set) — HANYA token yang dikenal,
+          # jangan sentuh __INVITATION_CONFIG__ (identifier asli di file ini)
+          for leftover in ['__SUPABASE_URL__', '__SUPABASE_ANON_KEY__', '__ADMIN_PASSWORD_HASH__']:
+              content = content.replace(leftover, '')
           with open(path, 'w', encoding='utf-8') as f:
               f.write(content)
 
