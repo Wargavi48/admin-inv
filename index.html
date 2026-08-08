@@ -12,54 +12,58 @@
 <!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
+    <button class="lang-btn login-lang" type="button" title="Ganti bahasa">🌐 <span data-lang-code>ID</span></button>
     <h1>Admin</h1>
-    <div class="sub">Masukkan password untuk mengelola daftar tamu</div>
-    <input id="loginPassword" type="password" placeholder="Password admin" autocomplete="current-password" />
-    <button class="btn-primary login-btn" id="loginBtn">Masuk</button>
+    <div class="sub" data-i18n="loginSub">Masukkan password untuk mengelola daftar tamu</div>
+    <input id="loginPassword" type="password" placeholder="Password admin" data-i18n="loginPlaceholder" autocomplete="current-password" />
+    <button class="btn-primary login-btn" id="loginBtn" data-i18n="loginBtn">Masuk</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
 <div class="wrap" id="dashboard" style="display:none;">
   <div class="wrap-head">
-    <h1>Admin Dashboard</h1>
-    <button class="btn-ghost" id="logoutBtn">Keluar</button>
+    <h1 data-i18n="dashboardTitle">Admin Dashboard</h1>
+    <div style="display:flex; gap:8px;">
+      <button class="lang-btn" type="button" title="Ganti bahasa">🌐 <span data-lang-code>ID</span></button>
+      <button class="btn-ghost" id="logoutBtn" data-i18n="logoutBtn">Keluar</button>
+    </div>
   </div>
-  <div class="sub">Kelola daftar tamu & link undangan personal</div>
+  <div class="sub" data-i18n="dashboardSub">Kelola daftar tamu & link undangan personal</div>
 
   <div class="setup-banner" id="setupBanner">
     ⚠️ Supabase belum dikonfigurasi. Buka <code>config.js</code> dan isi <code>SUPABASE_URL</code> &amp; <code>SUPABASE_ANON_KEY</code>, lalu jalankan <code>supabase-schema.sql</code> di SQL Editor Supabase.
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="num" id="statTotal">0</div><div class="label">Total tamu</div></div>
-    <div class="stat"><div class="num" id="statOpened">0</div><div class="label">Sudah buka</div></div>
-    <div class="stat"><div class="num" id="statPending">0</div><div class="label">Belum buka</div></div>
+    <div class="stat"><div class="num" id="statTotal">0</div><div class="label" data-i18n="statTotal">Total tamu</div></div>
+    <div class="stat"><div class="num" id="statOpened">0</div><div class="label" data-i18n="statOpened">Sudah buka</div></div>
+    <div class="stat"><div class="num" id="statPending">0</div><div class="label" data-i18n="statPending">Belum buka</div></div>
   </div>
 
   <div class="panel">
-    <h2>Tambah tamu baru</h2>
+    <h2 data-i18n="addTitle">Tambah tamu baru</h2>
     <div class="form-row">
       <div class="field">
-        <label>Nama tamu</label>
-        <input id="inputName" placeholder="Contoh: Keluarga Bapak Andi" />
+        <label data-i18n="labelName">Nama tamu</label>
+        <input id="inputName" placeholder="Contoh: Keluarga Bapak Andi" data-i18n="namePlaceholder" />
       </div>
       <div class="field">
-        <label>Slug link (opsional, auto dari nama)</label>
-        <input id="inputSlug" placeholder="contoh: keluarga-andi" />
+        <label data-i18n="labelSlug">Slug link (opsional, auto dari nama)</label>
+        <input id="inputSlug" placeholder="contoh: keluarga-andi" data-i18n="slugPlaceholder" />
       </div>
       <div class="field" style="max-width:110px;">
-        <label>Jml tamu</label>
+        <label data-i18n="labelMax">Jml tamu</label>
         <input id="inputMax" type="number" min="1" value="2" />
       </div>
       <div style="display:flex; align-items:flex-end;">
-        <button class="btn-primary" id="addBtn">+ Tambah</button>
+        <button class="btn-primary" id="addBtn" data-i18n="addBtn">+ Tambah</button>
       </div>
     </div>
   </div>
 
   <div class="panel">
-    <h2>Daftar tamu (<span id="listCount">0</span>)</h2>
+    <h2><span data-i18n="listTitle">Daftar tamu</span> (<span id="listCount">0</span>)</h2>
     <div id="tableWrap">
       <div class="empty">Memuat data...</div>
     </div>
@@ -71,11 +75,131 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script>
+// ---- Lokalisasi EN/ID ----
+(function(){
+  const I18N = {
+    en: {
+      loginSub: "Enter password to manage the guest list",
+      loginPlaceholder: "Admin password",
+      loginBtn: "Sign in",
+      loginErrorRequired: "Password is required",
+      loginErrorWrong: "Wrong password",
+      dashboardTitle: "Admin Dashboard",
+      logoutBtn: "Log out",
+      dashboardSub: "Manage guest list & personal invitation links",
+      statTotal: "Total guests",
+      statOpened: "Opened",
+      statPending: "Not opened",
+      addTitle: "Add new guest",
+      labelName: "Guest name",
+      labelSlug: "Slug link (optional, auto from name)",
+      labelMax: "Guests count",
+      namePlaceholder: "e.g., Keluarga Bapak Andi",
+      slugPlaceholder: "e.g., keluarga-andi",
+      addBtn: "+ Add",
+      listTitle: "Guest list",
+      thName: "Name",
+      thMax: "No.",
+      thLink: "Personal link",
+      thStatus: "Status",
+      copyBtn: "Copy link",
+      deleteBtn: "Delete",
+      badgeOpened: "● Opened",
+      badgePending: "○ Not opened",
+      emptyNoGuests: "No guests yet. Add your first guest above.",
+      toastCopied: "Link copied!",
+      toastDeleted: "Guest deleted",
+      toastAdded: "Guest added",
+      loadFail: "Failed to load data: ",
+      deleteFail: "Failed to delete: ",
+      addFail: "Failed to add: ",
+      slugUsed: "Slug already in use, try another name",
+      nameRequired: "Guest name is required",
+      notConfigured: "Supabase not configured",
+      confirmDelete: "Delete this guest?"
+    },
+    id: {
+      loginSub: "Masukkan password untuk mengelola daftar tamu",
+      loginPlaceholder: "Password admin",
+      loginBtn: "Masuk",
+      loginErrorRequired: "Password wajib diisi",
+      loginErrorWrong: "Password salah",
+      dashboardTitle: "Admin Dashboard",
+      logoutBtn: "Keluar",
+      dashboardSub: "Kelola daftar tamu & link undangan personal",
+      statTotal: "Total tamu",
+      statOpened: "Sudah buka",
+      statPending: "Belum buka",
+      addTitle: "Tambah tamu baru",
+      labelName: "Nama tamu",
+      labelSlug: "Slug link (opsional, auto dari nama)",
+      labelMax: "Jml tamu",
+      namePlaceholder: "Contoh: Keluarga Bapak Andi",
+      slugPlaceholder: "contoh: keluarga-andi",
+      addBtn: "+ Tambah",
+      listTitle: "Daftar tamu",
+      thName: "Nama",
+      thMax: "Jml",
+      thLink: "Link personal",
+      thStatus: "Status",
+      copyBtn: "Salin link",
+      deleteBtn: "Hapus",
+      badgeOpened: "● Sudah buka",
+      badgePending: "○ Belum buka",
+      emptyNoGuests: "Belum ada tamu. Tambahkan tamu pertama di atas.",
+      toastCopied: "Link disalin!",
+      toastDeleted: "Tamu dihapus",
+      toastAdded: "Tamu ditambahkan",
+      loadFail: "Gagal memuat data: ",
+      deleteFail: "Gagal hapus: ",
+      addFail: "Gagal menambah: ",
+      slugUsed: "Slug sudah dipakai, coba nama lain",
+      nameRequired: "Nama tamu wajib diisi",
+      notConfigured: "Supabase belum dikonfigurasi",
+      confirmDelete: "Hapus tamu ini?"
+    }
+  };
+
+  let lang = 'id';
+  try{ lang = localStorage.getItem('lang') || 'id'; }catch(e){}
+
+  function tr(k){
+    const table = I18N[lang] || I18N.en;
+    return (table[k] !== undefined) ? table[k] : (I18N.en[k] !== undefined ? I18N.en[k] : k);
+  }
+
+  function applyStatic(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k = el.getAttribute('data-i18n');
+      if (el.tagName === 'INPUT') el.placeholder = tr(k);
+      else el.textContent = tr(k);
+    });
+    document.documentElement.setAttribute('lang', lang);
+  }
+
+  function toggle(){
+    lang = lang === 'en' ? 'id' : 'en';
+    applyStatic();
+    try{ localStorage.setItem('lang', lang); }catch(e){}
+    document.querySelectorAll('[data-lang-code]').forEach(el=> el.textContent = lang.toUpperCase());
+    if (window.__onLangChange) window.__onLangChange();
+  }
+
+  window.__i18n = { tr, applyStatic, toggle, get lang(){ return lang; } };
+  applyStatic();
+  document.querySelectorAll('[data-lang-code]').forEach(el=> el.textContent = lang.toUpperCase());
+})();
+</script>
+<script>
 (function(){
   const { SUPABASE_URL, SUPABASE_ANON_KEY, INVITATION_URL, ADMIN_PASSWORD_HASH } = window.__INVITATION_CONFIG__;
   const configured = SUPABASE_URL && SUPABASE_URL.startsWith('http');
   if (!configured) document.getElementById('setupBanner').classList.add('show');
   const supabase = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  const tr = window.__i18n.tr;
+  // Re-render table + stats saat bahasa diganti
+  window.__onLangChange = ()=>{ if (dashboard && dashboard.style.display !== 'none') refresh(); };
 
   // URL halaman undangan — dipakai untuk membuat link personal tamu.
   // Diambil dari config.js (INVITATION_URL); fallback ke /invitation/ di domain yang sama.
@@ -111,7 +235,7 @@
   document.getElementById('loginBtn').addEventListener('click', async ()=>{
     const input = document.getElementById('loginPassword');
     const errEl = document.getElementById('loginError');
-    if (!input.value){ errEl.textContent = 'Password wajib diisi'; return; }
+    if (!input.value){ errEl.textContent = tr('loginErrorRequired'); return; }
     const hash = await sha256hex(input.value);
     if (hash === ADMIN_PASSWORD_HASH){
       sessionStorage.setItem('adminAuthed','1');
@@ -119,7 +243,7 @@
       input.value = '';
       enterDashboard();
     } else {
-      errEl.textContent = 'Password salah';
+      errEl.textContent = tr('loginErrorWrong');
     }
   });
   document.getElementById('loginPassword').addEventListener('keydown', e=>{
@@ -148,7 +272,7 @@
   async function fetchGuests(){
     if (!supabase) return [];
     const { data, error } = await supabase.from('guests').select('*').order('created_at', { ascending:false });
-    if (error){ console.error(error); toast('Gagal memuat data: ' + error.message); return []; }
+    if (error){ console.error(error); toast(tr('loadFail') + error.message); return []; }
     return data || [];
   }
 
@@ -164,14 +288,14 @@
   function renderTable(guests){
     const wrap = document.getElementById('tableWrap');
     if (guests.length === 0){
-      wrap.innerHTML = '<div class="empty">Belum ada tamu. Tambahkan tamu pertama di atas.</div>';
+      wrap.innerHTML = '<div class="empty">' + tr('emptyNoGuests') + '</div>';
       return;
     }
     const rows = guests.map(g=>{
       const link = `${baseUrl}?to=${encodeURIComponent(g.slug)}`;
       const status = g.opened_at
-        ? `<span class="badge opened">● Sudah buka</span>`
-        : `<span class="badge pending">○ Belum buka</span>`;
+        ? `<span class="badge opened">${tr('badgeOpened')}</span>`
+        : `<span class="badge pending">${tr('badgePending')}</span>`;
       return `
         <tr>
           <td>${escapeHtml(g.name)}</td>
@@ -179,33 +303,33 @@
           <td>
             <div class="link-cell">
               <code>${escapeHtml(g.slug)}</code>
-              <button class="copy-btn" data-link="${link}">Salin link</button>
+              <button class="copy-btn" data-link="${link}">${tr('copyBtn')}</button>
             </div>
           </td>
           <td>${status}</td>
-          <td><button class="btn-danger" data-delete="${g.id}">Hapus</button></td>
+          <td><button class="btn-danger" data-delete="${g.id}">${tr('deleteBtn')}</button></td>
         </tr>`;
     }).join('');
 
     wrap.innerHTML = `
       <table>
         <thead>
-          <tr><th>Nama</th><th>Jml</th><th>Link personal</th><th>Status</th><th></th></tr>
+          <tr><th>${tr('thName')}</th><th>${tr('thMax')}</th><th>${tr('thLink')}</th><th>${tr('thStatus')}</th><th></th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>`;
 
     wrap.querySelectorAll('[data-link]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
-        navigator.clipboard.writeText(btn.dataset.link).then(()=> toast('Link disalin!'));
+        navigator.clipboard.writeText(btn.dataset.link).then(()=> toast(tr('toastCopied')));
       });
     });
     wrap.querySelectorAll('[data-delete]').forEach(btn=>{
       btn.addEventListener('click', async ()=>{
-        if (!confirm('Hapus tamu ini?')) return;
+        if (!confirm(tr('confirmDelete'))) return;
         const { error } = await supabase.from('guests').delete().eq('id', btn.dataset.delete);
-        if (error){ toast('Gagal hapus: ' + error.message); return; }
-        toast('Tamu dihapus');
+        if (error){ toast(tr('deleteFail') + error.message); return; }
+        toast(tr('toastDeleted'));
         refresh();
       });
     });
@@ -222,11 +346,11 @@
   }
 
   document.getElementById('addBtn').addEventListener('click', async ()=>{
-    if (!supabase){ toast('Supabase belum dikonfigurasi'); return; }
+    if (!supabase){ toast(tr('notConfigured')); return; }
     const name = document.getElementById('inputName').value.trim();
     let slug = document.getElementById('inputSlug').value.trim();
     const maxGuests = parseInt(document.getElementById('inputMax').value, 10) || 1;
-    if (!name){ toast('Nama tamu wajib diisi'); return; }
+    if (!name){ toast(tr('nameRequired')); return; }
     if (!slug) slug = slugify(name);
     else slug = slugify(slug);
 
@@ -235,14 +359,19 @@
     const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests });
     btn.disabled = false;
     if (error){
-      toast(error.code === '23505' ? 'Slug sudah dipakai, coba nama lain' : 'Gagal menambah: ' + error.message);
+      toast(error.code === '23505' ? tr('slugUsed') : tr('addFail') + error.message);
       return;
     }
     document.getElementById('inputName').value = '';
     document.getElementById('inputSlug').value = '';
     document.getElementById('inputMax').value = 2;
-    toast('Tamu ditambahkan');
+    toast(tr('toastAdded'));
     refresh();
+  });
+
+  // Tombol bahasa
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> window.__i18n.toggle());
   });
 
   checkAuth();

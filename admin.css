@@ -50,6 +50,11 @@
   .btn-primary:disabled{ opacity:0.5; cursor:default; }
   .btn-ghost{ background:transparent; color:var(--muted); border:1px solid var(--border); }
   .btn-ghost:hover{ color:var(--cream); border-color:var(--gold); }
+  .lang-btn{
+    background:transparent; color:var(--muted); border:1px solid var(--border);
+    padding:8px 12px; font-size:12px; font-weight:700; gap:5px;
+  }
+  .lang-btn:hover{ color:var(--cream); border-color:var(--gold); }
   .btn-danger{ background:transparent; color:var(--danger); border:1px solid rgba(226,104,92,0.4); padding:6px 10px; font-size:12px; }
   .btn-danger:hover{ background:rgba(226,104,92,0.12); }
 
@@ -95,7 +100,9 @@
   .login-card{
     width:100%; max-width:360px; background:var(--panel);
     border:1px solid var(--border); border-radius:16px; padding:28px 24px; text-align:center;
+    position:relative;
   }
+  .login-lang{ position:absolute; top:14px; right:14px; }
   .login-card .sub{ margin-bottom:18px; }
   .login-card input{ margin-bottom:12px; text-align:center; }
   .login-btn{ width:100%; }

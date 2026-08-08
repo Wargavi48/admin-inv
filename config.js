@@ -35,13 +35,13 @@ const EVENT = {
     "You are warmly invited to attend the online graduation ceremony of",
   honoreeName: "Maura Nilambari",
   hostGreetingAfter:
-    "As a valued part of this community, your presence would mean a great deal as we celebrate their journey and say farewell together.",
+    "As a valued part of this community, your presence would mean a great deal as we celebrate her journey and say farewell together.",
   date: "Sunday, 9 August 2026",
   time: "19.19 WIB",
-  place: "Watch on YouTube",
+  place: "YouTube - Maura Nilambari - JKT48V",
   placeMapUrl: "https://www.youtube.com/live/2QxfnXY6OoA",
   closingMessage:
-    "Let us gather one final time to #makeitMemaurable, honor their journey, and wish them the very best in their next chapter.",
+    "Let us gather one final time to #makeitMemaurable, honor her journey, and wish her the very best in her next chapter.",
   defaultGuestName: "Tamu Undangan", // dipakai kalau slug di URL tidak ditemukan di database
 };
 
