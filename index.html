@@ -9,8 +9,22 @@
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-<div class="wrap">
-  <h1>Admin Dashboard</h1>
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <h1>Admin</h1>
+    <div class="sub">Masukkan password untuk mengelola daftar tamu</div>
+    <input id="loginPassword" type="password" placeholder="Password admin" autocomplete="current-password" />
+    <button class="btn-primary login-btn" id="loginBtn">Masuk</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div class="wrap" id="dashboard" style="display:none;">
+  <div class="wrap-head">
+    <h1>Admin Dashboard</h1>
+    <button class="btn-ghost" id="logoutBtn">Keluar</button>
+  </div>
   <div class="sub">Kelola daftar tamu & link undangan personal</div>
 
   <div class="setup-banner" id="setupBanner">
@@ -58,7 +72,7 @@
 <script src="config.js"></script>
 <script>
 (function(){
-  const { SUPABASE_URL, SUPABASE_ANON_KEY, INVITATION_URL } = window.__INVITATION_CONFIG__;
+  const { SUPABASE_URL, SUPABASE_ANON_KEY, INVITATION_URL, ADMIN_PASSWORD_HASH } = window.__INVITATION_CONFIG__;
   const configured = SUPABASE_URL && SUPABASE_URL.startsWith('http');
   if (!configured) document.getElementById('setupBanner').classList.add('show');
   const supabase = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
@@ -66,6 +80,56 @@
   // URL halaman undangan — dipakai untuk membuat link personal tamu.
   // Diambil dari config.js (INVITATION_URL); fallback ke /invitation/ di domain yang sama.
   const baseUrl = (INVITATION_URL || window.location.origin + '/invitation/').replace(/\/+$/, '') + '/';
+
+  // ---- Login (password gate sederhana — hanya pencegahan ringan, bukan keamanan nyata) ----
+  const loginScreen = document.getElementById('loginScreen');
+  const dashboard = document.getElementById('dashboard');
+
+  async function sha256hex(str){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function showLogin(){
+    loginScreen.style.display = 'flex';
+    dashboard.style.display = 'none';
+  }
+
+  function enterDashboard(){
+    loginScreen.style.display = 'none';
+    dashboard.style.display = '';
+    refresh();
+  }
+
+  function checkAuth(){
+    if (!crypto || !crypto.subtle){ enterDashboard(); return; }   // butuh HTTPS (GitHub Pages) — fallback terbuka
+    if (!ADMIN_PASSWORD_HASH){ enterDashboard(); return; }        // login nonaktif
+    if (sessionStorage.getItem('adminAuthed') === '1'){ enterDashboard(); return; }
+    showLogin();
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async ()=>{
+    const input = document.getElementById('loginPassword');
+    const errEl = document.getElementById('loginError');
+    if (!input.value){ errEl.textContent = 'Password wajib diisi'; return; }
+    const hash = await sha256hex(input.value);
+    if (hash === ADMIN_PASSWORD_HASH){
+      sessionStorage.setItem('adminAuthed','1');
+      errEl.textContent = '';
+      input.value = '';
+      enterDashboard();
+    } else {
+      errEl.textContent = 'Password salah';
+    }
+  });
+  document.getElementById('loginPassword').addEventListener('keydown', e=>{
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+  document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    sessionStorage.removeItem('adminAuthed');
+    document.getElementById('loginPassword').value = '';
+    showLogin();
+  });
 
   function toast(msg){
     const t = document.getElementById('toast');
@@ -181,7 +245,7 @@
     refresh();
   });
 
-  refresh();
+  checkAuth();
 })();
 </script>
 </body>

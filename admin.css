@@ -86,3 +86,20 @@
     transition:opacity 0.25s ease; z-index:50;
   }
   .toast.show{ opacity:1; }
+
+  /* ---------- Login screen ---------- */
+  .login-screen{
+    position:fixed; inset:0; background:var(--bg);
+    display:flex; align-items:center; justify-content:center; padding:20px; z-index:10;
+  }
+  .login-card{
+    width:100%; max-width:360px; background:var(--panel);
+    border:1px solid var(--border); border-radius:16px; padding:28px 24px; text-align:center;
+  }
+  .login-card .sub{ margin-bottom:18px; }
+  .login-card input{ margin-bottom:12px; text-align:center; }
+  .login-btn{ width:100%; }
+  .login-error{ margin-top:12px; color:var(--danger); font-size:13px; min-height:18px; }
+
+  .wrap-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .wrap-head h1{ margin-bottom:0; }

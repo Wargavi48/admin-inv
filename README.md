@@ -31,3 +31,28 @@ Link tamu dibangun dari `INVITATION_URL` di `config.js`:
 ```
 https://USERNAME-GITHUB.github.io/invitation/?to=slug-tamu
 ```
+
+## Login admin (password gate)
+- Halaman admin dilindungi password sederhana (hanya dicek di browser).
+- Password default: `admin123` → **WAJIB GANTI!**
+- Cara ganti password:
+  1. Buat hash SHA-256 dari password baru di PowerShell:
+     ```powershell
+     [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes("PASSWORD-BARU"))).ToLower()
+     ```
+  2. Tempel hasilnya ke `ADMIN_PASSWORD_HASH` di `config.js`.
+  3. Kosongkan (`""`) untuk menonaktifkan login.
+
+> ⚠️ Ini **bukan** keamanan nyata — siapa pun bisa membuka source code & melewatinya. Untuk proteksi data sungguhan, gunakan Supabase Auth + RLS.
+
+## GitHub Repository Secrets
+Supaya kredensial tidak tercecer di catatan lokal, simpan sebagai secret repo:
+1. Buka repo di GitHub → **Settings → Secrets and variables → Actions → New repository secret**.
+2. Tambahkan dua secret:
+   - `SUPABASE_URL` → `https://brahomjawmfckgtzgaea.supabase.co`
+   - `SUPABASE_ANON_KEY` → key anon dari Supabase Dashboard
+3. Karena memakai **"Deploy from a branch"**, secret ini **tidak otomatis dipakai** build (tidak ada workflow Actions) — secret hanya tersimpan aman. Kalau mau dipakai, perlu workflow GitHub Actions.
+
+> Catatan penting:
+> - `SUPABASE_ANON_KEY` **publik by design** — ikut terkirim ke browser & tampil di JS situs. Menyimpannya di secret tidak menyembunyikannya dari pengunjung.
+> - Jangan **pernah** menaruh **SERVICE_ROLE key** di `config.js`/frontend — itu secret asli yang wajib dijaga.
