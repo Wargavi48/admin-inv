@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — Daftar Tamu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>Admin Dashboard</h1>
+  <div class="sub">Kelola daftar tamu & link undangan personal</div>
+
+  <div class="setup-banner" id="setupBanner">
+    ⚠️ Supabase belum dikonfigurasi. Buka <code>config.js</code> dan isi <code>SUPABASE_URL</code> &amp; <code>SUPABASE_ANON_KEY</code>, lalu jalankan <code>supabase-schema.sql</code> di SQL Editor Supabase.
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="statTotal">0</div><div class="label">Total tamu</div></div>
+    <div class="stat"><div class="num" id="statOpened">0</div><div class="label">Sudah buka</div></div>
+    <div class="stat"><div class="num" id="statPending">0</div><div class="label">Belum buka</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>Tambah tamu baru</h2>
+    <div class="form-row">
+      <div class="field">
+        <label>Nama tamu</label>
+        <input id="inputName" placeholder="Contoh: Keluarga Bapak Andi" />
+      </div>
+      <div class="field">
+        <label>Slug link (opsional, auto dari nama)</label>
+        <input id="inputSlug" placeholder="contoh: keluarga-andi" />
+      </div>
+      <div class="field" style="max-width:110px;">
+        <label>Jml tamu</label>
+        <input id="inputMax" type="number" min="1" value="2" />
+      </div>
+      <div style="display:flex; align-items:flex-end;">
+        <button class="btn-primary" id="addBtn">+ Tambah</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Daftar tamu (<span id="listCount">0</span>)</h2>
+    <div id="tableWrap">
+      <div class="empty">Memuat data...</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+  const { SUPABASE_URL, SUPABASE_ANON_KEY, INVITATION_URL } = window.__INVITATION_CONFIG__;
+  const configured = SUPABASE_URL && SUPABASE_URL.startsWith('http');
+  if (!configured) document.getElementById('setupBanner').classList.add('show');
+  const supabase = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  // URL halaman undangan — dipakai untuk membuat link personal tamu.
+  // Diambil dari config.js (INVITATION_URL); fallback ke /invitation/ di domain yang sama.
+  const baseUrl = (INVITATION_URL || window.location.origin + '/invitation/').replace(/\/+$/, '') + '/';
+
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 1800);
+  }
+
+  function slugify(str){
+    return str.toString().toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g,'')
+      .replace(/\s+/g,'-')
+      .replace(/-+/g,'-');
+  }
+
+  async function fetchGuests(){
+    if (!supabase) return [];
+    const { data, error } = await supabase.from('guests').select('*').order('created_at', { ascending:false });
+    if (error){ console.error(error); toast('Gagal memuat data: ' + error.message); return []; }
+    return data || [];
+  }
+
+  function renderStats(guests){
+    const total = guests.length;
+    const opened = guests.filter(g=>g.opened_at).length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statOpened').textContent = opened;
+    document.getElementById('statPending').textContent = total - opened;
+    document.getElementById('listCount').textContent = total;
+  }
+
+  function renderTable(guests){
+    const wrap = document.getElementById('tableWrap');
+    if (guests.length === 0){
+      wrap.innerHTML = '<div class="empty">Belum ada tamu. Tambahkan tamu pertama di atas.</div>';
+      return;
+    }
+    const rows = guests.map(g=>{
+      const link = `${baseUrl}?to=${encodeURIComponent(g.slug)}`;
+      const status = g.opened_at
+        ? `<span class="badge opened">● Sudah buka</span>`
+        : `<span class="badge pending">○ Belum buka</span>`;
+      return `
+        <tr>
+          <td>${escapeHtml(g.name)}</td>
+          <td>${g.max_guests}</td>
+          <td>
+            <div class="link-cell">
+              <code>${escapeHtml(g.slug)}</code>
+              <button class="copy-btn" data-link="${link}">Salin link</button>
+            </div>
+          </td>
+          <td>${status}</td>
+          <td><button class="btn-danger" data-delete="${g.id}">Hapus</button></td>
+        </tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr><th>Nama</th><th>Jml</th><th>Link personal</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+    wrap.querySelectorAll('[data-link]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        navigator.clipboard.writeText(btn.dataset.link).then(()=> toast('Link disalin!'));
+      });
+    });
+    wrap.querySelectorAll('[data-delete]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        if (!confirm('Hapus tamu ini?')) return;
+        const { error } = await supabase.from('guests').delete().eq('id', btn.dataset.delete);
+        if (error){ toast('Gagal hapus: ' + error.message); return; }
+        toast('Tamu dihapus');
+        refresh();
+      });
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  async function refresh(){
+    const guests = await fetchGuests();
+    renderStats(guests);
+    renderTable(guests);
+  }
+
+  document.getElementById('addBtn').addEventListener('click', async ()=>{
+    if (!supabase){ toast('Supabase belum dikonfigurasi'); return; }
+    const name = document.getElementById('inputName').value.trim();
+    let slug = document.getElementById('inputSlug').value.trim();
+    const maxGuests = parseInt(document.getElementById('inputMax').value, 10) || 1;
+    if (!name){ toast('Nama tamu wajib diisi'); return; }
+    if (!slug) slug = slugify(name);
+    else slug = slugify(slug);
+
+    const btn = document.getElementById('addBtn');
+    btn.disabled = true;
+    const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests });
+    btn.disabled = false;
+    if (error){
+      toast(error.code === '23505' ? 'Slug sudah dipakai, coba nama lain' : 'Gagal menambah: ' + error.message);
+      return;
+    }
+    document.getElementById('inputName').value = '';
+    document.getElementById('inputSlug').value = '';
+    document.getElementById('inputMax').value = 2;
+    toast('Tamu ditambahkan');
+    refresh();
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>
