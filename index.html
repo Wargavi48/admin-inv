@@ -60,6 +60,13 @@
         <button class="btn-primary" id="addBtn" data-i18n="addBtn">+ Tambah</button>
       </div>
     </div>
+    <div class="guest-import">
+      <label data-i18n="importLabel">Isi otomatis dari JSON (opsional)</label>
+      <div class="import-row">
+        <textarea id="guestImportJson" rows="3" placeholder='{"name": "Keluarga Bapak Andi", "slug": "keluarga-andi", "max_guests": 2}'></textarea>
+        <button class="btn-ghost" id="importBtn" data-i18n="importBtn">Isi dari JSON</button>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
@@ -295,6 +302,10 @@
       nameRequired: "Guest name is required",
       notConfigured: "Supabase not configured",
       confirmDelete: "Delete this guest?",
+      importLabel: "Auto-fill from JSON (optional)",
+      importBtn: "Fill from JSON",
+      importInvalid: "Invalid JSON. Expected fields: name, slug, max_guests",
+      importFilled: "Form filled from JSON",
       invTitle: "Invitations",
       invSub: "Manage invitations as JSON files in the invitations/ folder of the invitation repo. Each invitation has its own link: ?inv=<slug>. Save the file to the repo and push — the invitation page loads it automatically.",
       invNew: "+ Create new invitation",
@@ -388,6 +399,10 @@
       nameRequired: "Nama tamu wajib diisi",
       notConfigured: "Supabase belum dikonfigurasi",
       confirmDelete: "Hapus tamu ini?",
+      importLabel: "Isi otomatis dari JSON (opsional)",
+      importBtn: "Isi dari JSON",
+      importInvalid: "JSON tidak valid. Field yang didukung: name, slug, max_guests",
+      importFilled: "Form terisi dari JSON",
       invTitle: "Undangan",
       invSub: "Kelola undangan sebagai file JSON di folder invitations/ repo invitation. Setiap undangan punya link sendiri: ?inv=<slug>. Simpan file ke repo lalu push — halaman undangan otomatis memuatnya.",
       invNew: "+ Buat undangan baru",
@@ -628,6 +643,26 @@
     renderStats(guests);
     renderTable(guests);
   }
+
+  document.getElementById('importBtn').addEventListener('click', ()=>{
+    const raw = document.getElementById('guestImportJson').value.trim();
+    if (!raw){ toast(tr('importInvalid')); return; }
+    let data;
+    try{
+      data = JSON.parse(raw);
+    }catch(e){
+      toast(tr('importInvalid'));
+      return;
+    }
+    if (typeof data !== 'object' || data === null || Array.isArray(data)){
+      toast(tr('importInvalid'));
+      return;
+    }
+    if (data.name) document.getElementById('inputName').value = data.name;
+    if (data.slug) document.getElementById('inputSlug').value = data.slug;
+    if (data.max_guests) document.getElementById('inputMax').value = data.max_guests;
+    toast(tr('importFilled'));
+  });
 
   document.getElementById('addBtn').addEventListener('click', async ()=>{
     if (!supabase){ toast(tr('notConfigured')); return; }

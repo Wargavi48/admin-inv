@@ -143,3 +143,15 @@
     font-family:'Consolas','Menlo',monospace; resize:vertical; line-height:1.5;
   }
   .inv-json-preview textarea:focus{ outline:none; border-color:var(--gold); }
+
+  /* ---------- Import JSON tamu ---------- */
+  .guest-import{ margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
+  .guest-import label{ font-size:12px; color:var(--muted); margin-bottom:5px; display:block; }
+  .import-row{ display:flex; gap:8px; align-items:stretch; }
+  .import-row textarea{
+    flex:1; background:var(--panel-2); border:1px solid var(--border);
+    color:var(--cream); padding:10px 12px; border-radius:8px; font-size:12px;
+    font-family:'Consolas','Menlo',monospace; resize:vertical; line-height:1.5;
+  }
+  .import-row textarea:focus{ outline:none; border-color:var(--gold); }
+  .import-row button{ white-space:nowrap; }
