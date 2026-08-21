@@ -63,7 +63,10 @@
   </div>
 
   <div class="panel">
-    <h2><span data-i18n="listTitle">Daftar tamu</span> (<span id="listCount">0</span>)</h2>
+    <div class="panel-head">
+      <h2><span data-i18n="listTitle">Daftar tamu</span> (<span id="listCount">0</span>)</h2>
+      <button class="btn-ghost btn-reset" id="resetStatusBtn" data-i18n="resetStatus">Reset status</button>
+    </div>
     <div id="tableWrap">
       <div class="empty">Memuat data...</div>
     </div>
@@ -360,7 +363,12 @@
       invGuide: "Invitations are JSON files in the invitations/ folder of the invitation repo. To add or edit one:",
       invGuide1: "Fill the form below with the invitation content.",
       invGuide2: "Download or copy the JSON, then save it as <slug>.json in the invitations/ folder of the invitation repo.",
-      invGuide3: "Commit and push. The invitation page loads it automatically at ?inv=<slug>."
+      invGuide3: "Commit and push. The invitation page loads it automatically at ?inv=<slug>.",
+      resetStatus: "Reset status",
+      resetStatusConfirm: "Reset opened status for ALL guests? This cannot be undone.",
+      resetStatusDone: "All guest statuses reset",
+      resetStatusFail: "Failed to reset statuses: ",
+      resetStatusEmpty: "No guests to reset"
     },
     id: {
       loginSub: "Masukkan password untuk mengelola daftar tamu",
@@ -458,7 +466,12 @@
       invGuide: "Undangan adalah file JSON di folder invitations/ repo invitation. Untuk menambah/mengedit:",
       invGuide1: "Isi form di bawah dengan isi undangan.",
       invGuide2: "Unduh atau salin JSON, lalu simpan sebagai <slug>.json di folder invitations/ repo invitation.",
-      invGuide3: "Commit dan push. Halaman undangan otomatis memuatnya di ?inv=<slug>."
+      invGuide3: "Commit dan push. Halaman undangan otomatis memuatnya di ?inv=<slug>.",
+      resetStatus: "Reset status",
+      resetStatusConfirm: "Reset status dibuka untuk SEMUA tamu? Tindakan ini tidak bisa dibatalkan.",
+      resetStatusDone: "Status semua tamu direset",
+      resetStatusFail: "Gagal mereset status: ",
+      resetStatusEmpty: "Tidak ada tamu untuk direset"
     }
   };
 
@@ -668,6 +681,21 @@
     document.getElementById('inputSlug').value = '';
     document.getElementById('inputMax').value = 2;
     toast(tr('toastAdded'));
+    refresh();
+  });
+
+  // ---- Reset status semua tamu (kosongkan opened_at) ----
+  document.getElementById('resetStatusBtn').addEventListener('click', async ()=>{
+    if (!supabase){ toast(tr('notConfigured')); return; }
+    const guests = await fetchGuests();
+    if (!guests.length){ toast(tr('resetStatusEmpty')); return; }
+    if (!confirm(tr('resetStatusConfirm'))) return;
+    const btn = document.getElementById('resetStatusBtn');
+    btn.disabled = true;
+    const { error } = await supabase.from('guests').update({ opened_at: null }).neq('id', 0);
+    btn.disabled = false;
+    if (error){ toast(tr('resetStatusFail') + error.message); return; }
+    toast(tr('resetStatusDone'));
     refresh();
   });
 

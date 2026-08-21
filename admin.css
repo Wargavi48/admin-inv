@@ -30,6 +30,9 @@
     padding:20px; margin-bottom:20px;
   }
   .panel h2{ font-size:15px; font-weight:600; margin-bottom:14px; color:var(--cream); }
+  .panel-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+  .panel-head h2{ margin-bottom:0; }
+  .btn-reset{ padding:6px 12px; font-size:12px; }
 
   .form-row{ display:flex; gap:10px; flex-wrap:wrap; }
   .form-row .field{ flex:1; min-width:140px; }
