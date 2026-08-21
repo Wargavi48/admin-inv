@@ -685,14 +685,19 @@
       const status = g.opened_at
         ? `<span class="badge opened">${tr('badgeOpened')}</span>`
         : `<span class="badge pending">${tr('badgePending')}</span>`;
+      // Pill undangan: satu per slug dari folder invitations/ — klik = set + salin link
+      const pills = invOptions.map(s=>{
+        const active = s === invitation ? ' active' : '';
+        return `<button class="inv-pill${active}" data-inv-pill="${escapeHtml(s)}" data-guest="${escapeHtml(g.slug)}" title="${escapeHtml(s)}">${escapeHtml(s)}</button>`;
+      }).join('');
       return `
         <tr>
           <td>${escapeHtml(g.name)}</td>
           <td>${g.max_guests}</td>
           <td>
             <div class="link-cell">
-              <code>${escapeHtml(g.slug)}${invitation ? ' <span class="inv-tag">' + escapeHtml(invitation) + '</span>' : ''}</code>
-              <button class="copy-btn" data-link="${link}">${tr('copyBtn')}</button>
+              <code>${escapeHtml(g.slug)}</code>
+              <div class="inv-pills">${pills}</div>
             </div>
           </td>
           <td>${status}</td>
@@ -708,9 +713,14 @@
         <tbody>${rows}</tbody>
       </table>`;
 
-    wrap.querySelectorAll('[data-link]').forEach(btn=>{
+    wrap.querySelectorAll('[data-inv-pill]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
-        navigator.clipboard.writeText(btn.dataset.link).then(()=> toast(tr('toastCopied')));
+        const slug = btn.dataset.guest;
+        const invitation = btn.dataset.invPill;
+        setInvForGuest(slug, invitation);
+        const link = `${baseUrl}?to=${encodeURIComponent(slug)}&inv=${encodeURIComponent(invitation)}`;
+        navigator.clipboard.writeText(link).then(()=> toast(tr('toastCopied')));
+        refresh();
       });
     });
     wrap.querySelectorAll('[data-delete]').forEach(btn=>{
