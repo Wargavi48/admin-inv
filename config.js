@@ -21,7 +21,11 @@ const INVITATION_URL = `https://${GITHUB_USERNAME}.github.io/invitation/`;
 //    Kosongkan ("") untuk menonaktifkan login.
 const ADMIN_PASSWORD_HASH = "__ADMIN_PASSWORD_HASH__";
 
-// 2) ISI UNDANGAN — placeholder, silakan edit sesuai acara kamu
+// 1d) (tidak dipakai) — undangan disimpan sebagai file JSON di folder invitations/ repo invitation
+
+// 2) ISI UNDANGAN — FALLBACK BAWAAN
+//    Dipakai kalau halaman dibuka TANPA ?inv=<slug>, atau file undangan tidak ditemukan.
+//    Undangan lain disimpan sebagai file JSON di folder invitations/ di repo invitation.
 const EVENT = {
   hostTag: "Wargavi48",              // teks kecil kiri atas (dipakai kalau hostLogoUrl kosong)
   brandTag: "KodoknyaMaura",         // teks kecil kanan atas (dipakai kalau brandLogoUrl kosong)

@@ -68,6 +68,160 @@
       <div class="empty">Memuat data...</div>
     </div>
   </div>
+
+  <div class="panel">
+    <h2 data-i18n="invTitle">Undangan</h2>
+    <div class="sub" data-i18n="invSub">Kelola undangan sebagai file JSON di folder <code>invitations/</code> repo invitation. Setiap undangan punya link sendiri: <code>?inv=&lt;slug&gt;</code>. Simpan file ke repo lalu push — halaman undangan otomatis memuatnya.</div>
+    <div class="inv-list" id="invList">
+      <div class="empty">Memuat undangan...</div>
+    </div>
+    <details class="inv-editor" id="invEditor">
+      <summary data-i18n="invNew">+ Buat undangan baru</summary>
+      <div class="inv-form">
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invSlug">Slug (nama file, unik)</label>
+            <input id="invInputSlug" placeholder="contoh: maura-graduation" />
+          </div>
+          <div class="field">
+            <label data-i18n="invCategory">Kategori (pill)</label>
+            <input id="invInputCategory" placeholder="Graduation / Wisuda" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invHostTag">Teks host (kiri atas)</label>
+            <input id="invInputHostTag" placeholder="Wargavi48" />
+          </div>
+          <div class="field">
+            <label data-i18n="invBrandTag">Teks brand (kanan atas)</label>
+            <input id="invInputBrandTag" placeholder="KodoknyaMaura" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invDefaultGuest">Nama tamu default</label>
+            <input id="invInputDefaultGuest" placeholder="Tamu Undangan" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invEventName">Nama acara</label>
+            <input id="invInputEventName" placeholder="Graduation of Maura Nilambari" />
+          </div>
+          <div class="field">
+            <label data-i18n="invHonoree">Nama yang dirayakan</label>
+            <input id="invInputHonoree" placeholder="Maura Nilambari" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invGreeting">Kalimat pembuka</label>
+            <input id="invInputGreeting" placeholder="You are warmly invited to attend..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invGreetingAfter">Kalimat setelah nama</label>
+            <input id="invInputGreetingAfter" placeholder="As a valued part of this community..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invClosing">Kalimat penutup</label>
+            <input id="invInputClosing" placeholder="Let us gather one final time..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invDate">Tanggal</label>
+            <input id="invInputDate" placeholder="Sunday, 9 August 2026" />
+          </div>
+          <div class="field">
+            <label data-i18n="invTime">Waktu</label>
+            <input id="invInputTime" placeholder="19.19 WIB" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invPlace">Tempat / platform</label>
+            <input id="invInputPlace" placeholder="YouTube - Maura Nilambari - JKT48V" />
+          </div>
+          <div class="field">
+            <label data-i18n="invPlaceUrl">Link tempat</label>
+            <input id="invInputPlaceUrl" placeholder="https://..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invHostLogo">Logo host (URL)</label>
+            <input id="invInputHostLogo" placeholder="asset/Pictorial.png" />
+          </div>
+          <div class="field" style="max-width:110px;">
+            <label data-i18n="invHostLogoH">Tinggi logo host</label>
+            <input id="invInputHostLogoH" type="number" min="0" placeholder="36" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invBrandLogo">Logo brand (URL)</label>
+            <input id="invInputBrandLogo" placeholder="asset/makeitMemaurable_log_logoo.png" />
+          </div>
+          <div class="field" style="max-width:110px;">
+            <label data-i18n="invBrandLogoH">Tinggi logo brand</label>
+            <input id="invInputBrandLogoH" type="number" min="0" placeholder="172" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invFonts">Font (dipisah koma, opsional)</label>
+            <input id="invInputFonts" placeholder="Story Script, Cormorant Garamond" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invThemeBrand">Warna brand (opsional)</label>
+            <input id="invInputThemeBrand" type="color" value="#0c6f9e" />
+          </div>
+          <div class="field">
+            <label data-i18n="invThemeAccent">Warna aksen (opsional)</label>
+            <input id="invInputThemeAccent" type="color" value="#22c3dd" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invThemeBg">Warna latar (opsional)</label>
+            <input id="invInputThemeBg" type="color" value="#ffffff" />
+          </div>
+          <div class="field">
+            <label data-i18n="invThemeText">Warna teks (opsional)</label>
+            <input id="invInputThemeText" type="color" value="#0d2634" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="invBgImage">Gambar latar (URL, opsional)</label>
+            <input id="invInputBgImage" placeholder="asset/inv.webp atau https://..." />
+          </div>
+          <div class="field">
+            <label data-i18n="invBgColor">Warna latar kartu (opsional)</label>
+            <input id="invInputBgColor" type="color" value="#ffffff" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
+            <button class="btn-primary" id="invDownloadBtn" data-i18n="invDownload">Unduh file JSON</button>
+            <button class="btn-ghost" id="invCopyBtn" data-i18n="invCopy">Salin JSON</button>
+            <button class="btn-ghost" id="invCancelBtn" data-i18n="invCancel">Batal</button>
+          </div>
+        </div>
+        <div class="inv-json-preview">
+          <label data-i18n="invPreview">Pratinjau JSON</label>
+          <textarea id="invJsonPreview" rows="8" readonly></textarea>
+        </div>
+      </div>
+    </details>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -116,7 +270,60 @@
       slugUsed: "Slug already in use, try another name",
       nameRequired: "Guest name is required",
       notConfigured: "Supabase not configured",
-      confirmDelete: "Delete this guest?"
+      confirmDelete: "Delete this guest?",
+      invTitle: "Invitations",
+      invSub: "Manage invitations as JSON files in the invitations/ folder of the invitation repo. Each invitation has its own link: ?inv=<slug>. Save the file to the repo and push — the invitation page loads it automatically.",
+      invNew: "+ Create new invitation",
+      invSlug: "Slug (file name, unique)",
+      invCategory: "Category (pill)",
+      invHostTag: "Host text (top left)",
+      invBrandTag: "Brand text (top right)",
+      invDefaultGuest: "Default guest name",
+      invEventName: "Event name",
+      invHonoree: "Honoree name",
+      invGreeting: "Opening sentence",
+      invGreetingAfter: "Sentence after name",
+      invClosing: "Closing sentence",
+      invDate: "Date",
+      invTime: "Time",
+      invPlace: "Place / platform",
+      invPlaceUrl: "Place link",
+      invHostLogo: "Host logo (URL)",
+      invHostLogoH: "Host logo height",
+      invBrandLogo: "Brand logo (URL)",
+      invBrandLogoH: "Brand logo height",
+      invFonts: "Fonts (comma separated, optional)",
+      invThemeBrand: "Brand color (optional)",
+      invThemeAccent: "Accent color (optional)",
+      invThemeBg: "Background color (optional)",
+      invThemeText: "Text color (optional)",
+      invBgImage: "Background image (URL, optional)",
+      invBgColor: "Card background color (optional)",
+      invSave: "Save invitation",
+      invCancel: "Cancel",
+      invEdit: "Edit",
+      invDelete: "Delete",
+      invCopyLink: "Copy link",
+      invDownload: "Download JSON file",
+      invCopy: "Copy JSON",
+      invPreview: "JSON preview",
+      invEmpty: "No invitations yet. Create one below.",
+      invLoading: "Loading invitations...",
+      invSaved: "Invitation saved",
+      invDeleted: "Invitation deleted",
+      invSlugRequired: "Slug is required",
+      invSlugInvalid: "Slug can only contain lowercase letters, numbers, and dashes",
+      invSaveFail: "Failed to save: ",
+      invDeleteFail: "Failed to delete: ",
+      invConfirmDelete: "Delete this invitation?",
+      invLoadFail: "Failed to load invitations: ",
+      invLinkCopied: "Invitation link copied!",
+      invJsonCopied: "JSON copied! Save it as <slug>.json in the invitations/ folder of the invitation repo.",
+      invDownloaded: "JSON downloaded. Place the file in the invitations/ folder of the invitation repo and push.",
+      invGuide: "Invitations are JSON files in the invitations/ folder of the invitation repo. To add or edit one:",
+      invGuide1: "Fill the form below with the invitation content.",
+      invGuide2: "Download or copy the JSON, then save it as <slug>.json in the invitations/ folder of the invitation repo.",
+      invGuide3: "Commit and push. The invitation page loads it automatically at ?inv=<slug>."
     },
     id: {
       loginSub: "Masukkan password untuk mengelola daftar tamu",
@@ -156,7 +363,60 @@
       slugUsed: "Slug sudah dipakai, coba nama lain",
       nameRequired: "Nama tamu wajib diisi",
       notConfigured: "Supabase belum dikonfigurasi",
-      confirmDelete: "Hapus tamu ini?"
+      confirmDelete: "Hapus tamu ini?",
+      invTitle: "Undangan",
+      invSub: "Kelola undangan sebagai file JSON di folder invitations/ repo invitation. Setiap undangan punya link sendiri: ?inv=<slug>. Simpan file ke repo lalu push — halaman undangan otomatis memuatnya.",
+      invNew: "+ Buat undangan baru",
+      invSlug: "Slug (nama file, unik)",
+      invCategory: "Kategori (pill)",
+      invHostTag: "Teks host (kiri atas)",
+      invBrandTag: "Teks brand (kanan atas)",
+      invDefaultGuest: "Nama tamu default",
+      invEventName: "Nama acara",
+      invHonoree: "Nama yang dirayakan",
+      invGreeting: "Kalimat pembuka",
+      invGreetingAfter: "Kalimat setelah nama",
+      invClosing: "Kalimat penutup",
+      invDate: "Tanggal",
+      invTime: "Waktu",
+      invPlace: "Tempat / platform",
+      invPlaceUrl: "Link tempat",
+      invHostLogo: "Logo host (URL)",
+      invHostLogoH: "Tinggi logo host",
+      invBrandLogo: "Logo brand (URL)",
+      invBrandLogoH: "Tinggi logo brand",
+      invFonts: "Font (dipisah koma, opsional)",
+      invThemeBrand: "Warna brand (opsional)",
+      invThemeAccent: "Warna aksen (opsional)",
+      invThemeBg: "Warna latar (opsional)",
+      invThemeText: "Warna teks (opsional)",
+      invBgImage: "Gambar latar (URL, opsional)",
+      invBgColor: "Warna latar kartu (opsional)",
+      invSave: "Simpan undangan",
+      invCancel: "Batal",
+      invEdit: "Edit",
+      invDelete: "Hapus",
+      invCopyLink: "Salin link",
+      invDownload: "Unduh file JSON",
+      invCopy: "Salin JSON",
+      invPreview: "Pratinjau JSON",
+      invEmpty: "Belum ada undangan. Buat di bawah.",
+      invLoading: "Memuat undangan...",
+      invSaved: "Undangan disimpan",
+      invDeleted: "Undangan dihapus",
+      invSlugRequired: "Slug wajib diisi",
+      invSlugInvalid: "Slug hanya boleh huruf kecil, angka, dan tanda hubung",
+      invSaveFail: "Gagal menyimpan: ",
+      invDeleteFail: "Gagal menghapus: ",
+      invConfirmDelete: "Hapus undangan ini?",
+      invLoadFail: "Gagal memuat undangan: ",
+      invLinkCopied: "Link undangan disalin!",
+      invJsonCopied: "JSON disalin! Simpan sebagai <slug>.json di folder invitations/ repo invitation.",
+      invDownloaded: "JSON diunduh. Letakkan file di folder invitations/ repo invitation lalu push.",
+      invGuide: "Undangan adalah file JSON di folder invitations/ repo invitation. Untuk menambah/mengedit:",
+      invGuide1: "Isi form di bawah dengan isi undangan.",
+      invGuide2: "Unduh atau salin JSON, lalu simpan sebagai <slug>.json di folder invitations/ repo invitation.",
+      invGuide3: "Commit dan push. Halaman undangan otomatis memuatnya di ?inv=<slug>."
     }
   };
 
@@ -368,6 +628,132 @@
     toast(tr('toastAdded'));
     refresh();
   });
+
+  // ---- Undangan (file JSON di repo invitation) ----
+  // Halaman admin tidak bisa menulis file ke GitHub Pages, jadi admin:
+  // 1) mengisi form, 2) mengunduh / menyalin JSON, 3) menaruh file di invitations/<slug>.json
+  // di repo invitation, lalu push. Halaman undangan memuatnya via ?inv=<slug>.
+  const INV_FIELDS = [
+    'hostTag','brandTag','hostLogoUrl','hostLogoHeight','brandLogoUrl','brandLogoHeight',
+    'category','eventName','hostGreeting','honoreeName','hostGreetingAfter',
+    'date','time','place','placeMapUrl','closingMessage','defaultGuestName',
+    'fonts','theme'
+  ];
+
+  function invFormToJson(){
+    const slug = document.getElementById('invInputSlug').value.trim();
+    const num = id => { const v = document.getElementById(id).value.trim(); return v === '' ? undefined : parseInt(v, 10); };
+    const theme = {};
+    const tb = document.getElementById('invInputThemeBrand').value;
+    const ta = document.getElementById('invInputThemeAccent').value;
+    const tbg = document.getElementById('invInputThemeBg').value;
+    const tt = document.getElementById('invInputThemeText').value;
+    if (tb && tb !== '#0c6f9e') theme.brand = tb;
+    if (ta && ta !== '#22c3dd') theme.accent = ta;
+    if (tbg && tbg !== '#ffffff') theme.bg = tbg;
+    if (tt && tt !== '#0d2634') theme.text = tt;
+    const bgImage = document.getElementById('invInputBgImage').value.trim();
+    const bgColor = document.getElementById('invInputBgColor').value;
+    if (bgImage) theme.backgroundImage = bgImage;
+    else if (bgColor && bgColor !== '#ffffff') theme.backgroundColor = bgColor;
+    const fonts = document.getElementById('invInputFonts').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const data = {
+      hostTag: document.getElementById('invInputHostTag').value.trim() || undefined,
+      brandTag: document.getElementById('invInputBrandTag').value.trim() || undefined,
+      hostLogoUrl: document.getElementById('invInputHostLogo').value.trim() || undefined,
+      hostLogoHeight: num('invInputHostLogoH'),
+      brandLogoUrl: document.getElementById('invInputBrandLogo').value.trim() || undefined,
+      brandLogoHeight: num('invInputBrandLogoH'),
+      category: document.getElementById('invInputCategory').value.trim() || undefined,
+      eventName: document.getElementById('invInputEventName').value.trim() || undefined,
+      hostGreeting: document.getElementById('invInputGreeting').value.trim() || undefined,
+      honoreeName: document.getElementById('invInputHonoree').value.trim() || undefined,
+      hostGreetingAfter: document.getElementById('invInputGreetingAfter').value.trim() || undefined,
+      date: document.getElementById('invInputDate').value.trim() || undefined,
+      time: document.getElementById('invInputTime').value.trim() || undefined,
+      place: document.getElementById('invInputPlace').value.trim() || undefined,
+      placeMapUrl: document.getElementById('invInputPlaceUrl').value.trim() || undefined,
+      closingMessage: document.getElementById('invInputClosing').value.trim() || undefined,
+      defaultGuestName: document.getElementById('invInputDefaultGuest').value.trim() || undefined
+    };
+    if (fonts.length) data.fonts = fonts;
+    if (Object.keys(theme).length) data.theme = theme;
+    // buang field undefined
+    Object.keys(data).forEach(k=>{ if (data[k] === undefined) delete data[k]; });
+    return { slug, data };
+  }
+
+  function renderInvPreview(){
+    const { slug, data } = invFormToJson();
+    const preview = document.getElementById('invJsonPreview');
+    if (!slug){
+      preview.value = '// isi slug dulu';
+      return;
+    }
+    preview.value = JSON.stringify(data, null, 2);
+  }
+
+  function downloadInvJson(){
+    const { slug, data } = invFormToJson();
+    if (!slug){ toast(tr('invSlugRequired')); return; }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = slug + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast(tr('invDownloaded'));
+  }
+
+  function copyInvJson(){
+    const { slug, data } = invFormToJson();
+    if (!slug){ toast(tr('invSlugRequired')); return; }
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(()=> toast(tr('invJsonCopied')));
+  }
+
+  function resetInvForm(){
+    ['invInputSlug','invInputCategory','invInputEventName','invInputHonoree','invInputGreeting',
+     'invInputGreetingAfter','invInputClosing','invInputDate','invInputTime','invInputPlace',
+     'invInputPlaceUrl','invInputHostLogo','invInputHostLogoH','invInputBrandLogo','invInputBrandLogoH',
+     'invInputFonts','invInputHostTag','invInputBrandTag','invInputDefaultGuest','invInputBgImage'].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('invInputThemeBrand').value = '#0c6f9e';
+    document.getElementById('invInputThemeAccent').value = '#22c3dd';
+    document.getElementById('invInputThemeBg').value = '#ffffff';
+    document.getElementById('invInputThemeText').value = '#0d2634';
+    document.getElementById('invInputBgColor').value = '#ffffff';
+    renderInvPreview();
+  }
+
+  function renderInvList(){
+    const list = document.getElementById('invList');
+    // Daftar undangan = file JSON di folder invitations/ repo invitation.
+    // Halaman admin tidak bisa membaca isi folder repo, jadi tampilkan panduan + form.
+    list.innerHTML = `
+      <div class="inv-guide">
+        <p>${tr('invGuide')}</p>
+        <ol>
+          <li>${tr('invGuide1')}</li>
+          <li>${tr('invGuide2')}</li>
+          <li>${tr('invGuide3')}</li>
+        </ol>
+      </div>`;
+  }
+
+  document.getElementById('invDownloadBtn').addEventListener('click', downloadInvJson);
+  document.getElementById('invCopyBtn').addEventListener('click', copyInvJson);
+  document.getElementById('invCancelBtn').addEventListener('click', resetInvForm);
+  ['invInputSlug','invInputCategory','invInputEventName','invInputHonoree','invInputGreeting',
+   'invInputGreetingAfter','invInputClosing','invInputDate','invInputTime','invInputPlace',
+   'invInputPlaceUrl','invInputHostLogo','invInputHostLogoH','invInputBrandLogo','invInputBrandLogoH',
+   'invInputFonts','invInputHostTag','invInputBrandTag','invInputDefaultGuest','invInputBgImage'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderInvPreview);
+  });
+  renderInvList();
+  renderInvPreview();
 
   // Tombol bahasa
   document.querySelectorAll('.lang-btn').forEach(btn=>{
