@@ -60,13 +60,6 @@
         <button class="btn-primary" id="addBtn" data-i18n="addBtn">+ Tambah</button>
       </div>
     </div>
-    <div class="guest-import">
-      <label data-i18n="importLabel">Isi otomatis dari JSON (opsional)</label>
-      <div class="import-row">
-        <textarea id="guestImportJson" rows="3" placeholder='{"name": "Keluarga Bapak Andi", "slug": "keluarga-andi", "max_guests": 2}'></textarea>
-        <button class="btn-ghost" id="importBtn" data-i18n="importBtn">Isi dari JSON</button>
-      </div>
-    </div>
   </div>
 
   <div class="panel">
@@ -85,6 +78,14 @@
     <details class="inv-editor" id="invEditor">
       <summary data-i18n="invNew">+ Buat undangan baru</summary>
       <div class="inv-form">
+        <div class="inv-import">
+          <label data-i18n="invImportLabel">Tempel JSON undangan untuk mengisi form otomatis</label>
+          <textarea id="invImportJson" rows="5" placeholder='{"category":{"en":"Graduation","id":"Wisuda"}, ...}'></textarea>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn-primary" id="invImportBtn" data-i18n="invImportBtn">Muat JSON ke form</button>
+            <button class="btn-ghost" id="invImportClear" data-i18n="invImportClear">Bersihkan</button>
+          </div>
+        </div>
         <div class="form-row">
           <div class="field">
             <label data-i18n="invSlug">Slug (nama file, unik)</label>
@@ -302,13 +303,14 @@
       nameRequired: "Guest name is required",
       notConfigured: "Supabase not configured",
       confirmDelete: "Delete this guest?",
-      importLabel: "Auto-fill from JSON (optional)",
-      importBtn: "Fill from JSON",
-      importInvalid: "Invalid JSON. Expected fields: name, slug, max_guests",
-      importFilled: "Form filled from JSON",
       invTitle: "Invitations",
       invSub: "Manage invitations as JSON files in the invitations/ folder of the invitation repo. Each invitation has its own link: ?inv=<slug>. Save the file to the repo and push — the invitation page loads it automatically.",
       invNew: "+ Create new invitation",
+      invImportLabel: "Paste invitation JSON to auto-fill the form",
+      invImportBtn: "Load JSON into form",
+      invImportClear: "Clear",
+      invImportOk: "Form filled from JSON",
+      invImportErr: "Invalid JSON: ",
       invSlug: "Slug (file name, unique)",
       invCategory: "Category (pill)",
       invHostTag: "Host text (top left)",
@@ -399,13 +401,14 @@
       nameRequired: "Nama tamu wajib diisi",
       notConfigured: "Supabase belum dikonfigurasi",
       confirmDelete: "Hapus tamu ini?",
-      importLabel: "Isi otomatis dari JSON (opsional)",
-      importBtn: "Isi dari JSON",
-      importInvalid: "JSON tidak valid. Field yang didukung: name, slug, max_guests",
-      importFilled: "Form terisi dari JSON",
       invTitle: "Undangan",
       invSub: "Kelola undangan sebagai file JSON di folder invitations/ repo invitation. Setiap undangan punya link sendiri: ?inv=<slug>. Simpan file ke repo lalu push — halaman undangan otomatis memuatnya.",
       invNew: "+ Buat undangan baru",
+      invImportLabel: "Tempel JSON undangan untuk mengisi form otomatis",
+      invImportBtn: "Muat JSON ke form",
+      invImportClear: "Bersihkan",
+      invImportOk: "Form terisi dari JSON",
+      invImportErr: "JSON tidak valid: ",
       invSlug: "Slug (nama file, unik)",
       invCategory: "Kategori (pill)",
       invHostTag: "Teks host (kiri atas)",
@@ -644,26 +647,6 @@
     renderTable(guests);
   }
 
-  document.getElementById('importBtn').addEventListener('click', ()=>{
-    const raw = document.getElementById('guestImportJson').value.trim();
-    if (!raw){ toast(tr('importInvalid')); return; }
-    let data;
-    try{
-      data = JSON.parse(raw);
-    }catch(e){
-      toast(tr('importInvalid'));
-      return;
-    }
-    if (typeof data !== 'object' || data === null || Array.isArray(data)){
-      toast(tr('importInvalid'));
-      return;
-    }
-    if (data.name) document.getElementById('inputName').value = data.name;
-    if (data.slug) document.getElementById('inputSlug').value = data.slug;
-    if (data.max_guests) document.getElementById('inputMax').value = data.max_guests;
-    toast(tr('importFilled'));
-  });
-
   document.getElementById('addBtn').addEventListener('click', async ()=>{
     if (!supabase){ toast(tr('notConfigured')); return; }
     const name = document.getElementById('inputName').value.trim();
@@ -820,6 +803,68 @@
       </div>`;
   }
 
+  function fillInvFormFromJson(json){
+    // Isi form dari objek JSON undangan (mendukung format i18n {en,id} dan field polos)
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined && val !== null) el.value = val;
+    };
+    const setPair = (enId, idId, val) => {
+      if (val && typeof val === 'object'){
+        set(enId, val.en || '');
+        set(idId, val.id || '');
+      } else if (typeof val === 'string'){
+        set(enId, val);
+        set(idId, val);
+      }
+    };
+    const i18n = json.i18n || {};
+    set('invInputSlug', json.slug || '');
+    setPair('invInputCategoryEn', 'invInputCategoryId', i18n.category || json.category);
+    set('invInputHostTag', json.hostTag);
+    set('invInputBrandTag', json.brandTag);
+    setPair('invInputDefaultGuestEn', 'invInputDefaultGuestId', i18n.defaultGuestName || json.defaultGuestName);
+    setPair('invInputEventNameEn', 'invInputEventNameId', i18n.eventName || json.eventName);
+    set('invInputHonoree', json.honoreeName);
+    setPair('invInputGreetingEn', 'invInputGreetingId', i18n.hostGreeting || json.hostGreeting);
+    setPair('invInputGreetingAfterEn', 'invInputGreetingAfterId', i18n.hostGreetingAfter || json.hostGreetingAfter);
+    setPair('invInputClosingEn', 'invInputClosingId', i18n.closingMessage || json.closingMessage);
+    setPair('invInputDateEn', 'invInputDateId', i18n.date || json.date);
+    set('invInputTime', json.time);
+    setPair('invInputPlaceEn', 'invInputPlaceId', i18n.place || json.place);
+    set('invInputPlaceUrl', json.placeMapUrl);
+    set('invInputHostLogo', json.hostLogoUrl);
+    set('invInputHostLogoH', json.hostLogoHeight);
+    set('invInputBrandLogo', json.brandLogoUrl);
+    set('invInputBrandLogoH', json.brandLogoHeight);
+    set('invInputFonts', Array.isArray(json.fonts) ? json.fonts.join(', ') : (json.fonts || ''));
+    const theme = json.theme || {};
+    if (theme.brand) set('invInputThemeBrand', theme.brand);
+    if (theme.accent) set('invInputThemeAccent', theme.accent);
+    if (theme.bg) set('invInputThemeBg', theme.bg);
+    if (theme.text) set('invInputThemeText', theme.text);
+    if (theme.backgroundImage) set('invInputBgImage', theme.backgroundImage);
+    if (theme.backgroundColor) set('invInputBgColor', theme.backgroundColor);
+    renderInvPreview();
+  }
+
+  function importInvJson(){
+    const raw = document.getElementById('invImportJson').value.trim();
+    if (!raw){ toast(tr('invImportErr') + 'empty'); return; }
+    try{
+      const json = JSON.parse(raw);
+      fillInvFormFromJson(json);
+      toast(tr('invImportOk'));
+    }catch(e){
+      toast(tr('invImportErr') + e.message);
+    }
+  }
+
+  document.getElementById('invImportBtn').addEventListener('click', importInvJson);
+  document.getElementById('invImportClear').addEventListener('click', ()=>{
+    document.getElementById('invImportJson').value = '';
+    resetInvForm();
+  });
   document.getElementById('invDownloadBtn').addEventListener('click', downloadInvJson);
   document.getElementById('invCopyBtn').addEventListener('click', copyInvJson);
   document.getElementById('invCancelBtn').addEventListener('click', resetInvForm);

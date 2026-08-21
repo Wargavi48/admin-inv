@@ -135,6 +135,18 @@
   .lang-pair input:first-child{ border-color:rgba(240,220,180,0.28); }
   .lang-pair input:last-child{ border-color:rgba(127,191,127,0.35); }
 
+  .inv-import{
+    background:var(--panel-2); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; margin-bottom:16px;
+  }
+  .inv-import label{ font-size:12px; color:var(--muted); margin-bottom:6px; display:block; }
+  .inv-import textarea{
+    width:100%; background:var(--panel); border:1px solid var(--border);
+    color:var(--cream); padding:10px 12px; border-radius:8px; font-size:12px;
+    font-family:'Consolas','Menlo',monospace; resize:vertical; line-height:1.5;
+  }
+  .inv-import textarea:focus{ outline:none; border-color:var(--gold); }
+
   .inv-json-preview{ margin-top:14px; }
   .inv-json-preview label{ font-size:12px; color:var(--muted); margin-bottom:5px; display:block; }
   .inv-json-preview textarea{
@@ -143,15 +155,3 @@
     font-family:'Consolas','Menlo',monospace; resize:vertical; line-height:1.5;
   }
   .inv-json-preview textarea:focus{ outline:none; border-color:var(--gold); }
-
-  /* ---------- Import JSON tamu ---------- */
-  .guest-import{ margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
-  .guest-import label{ font-size:12px; color:var(--muted); margin-bottom:5px; display:block; }
-  .import-row{ display:flex; gap:8px; align-items:stretch; }
-  .import-row textarea{
-    flex:1; background:var(--panel-2); border:1px solid var(--border);
-    color:var(--cream); padding:10px 12px; border-radius:8px; font-size:12px;
-    font-family:'Consolas','Menlo',monospace; resize:vertical; line-height:1.5;
-  }
-  .import-row textarea:focus{ outline:none; border-color:var(--gold); }
-  .import-row button{ white-space:nowrap; }
