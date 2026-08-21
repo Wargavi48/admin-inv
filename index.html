@@ -607,26 +607,37 @@
   }
 
   // ---- Muat daftar undangan dari folder invitations/ (repo invitation) ----
-  // Halaman admin tidak bisa membaca isi folder repo secara langsung, jadi coba
-  // ambil daftar dari file index (jika ada) atau dari daftar yang diketik manual.
-  // Pendekatan: coba fetch invitations/index.json (daftar slug) — kalau tidak ada,
-  // tampilkan pilihan dari daftar statis yang bisa diedit di config.
+  // Scan folder secara dinamis lewat GitHub API (repo publik, tanpa auth).
+  // Fallback kedua: file index.json (manifest) kalau API gagal.
   let invOptions = [];
   async function loadInvOptions(){
     const sel = document.getElementById('inputInvitation');
     if (!sel) return;
+    let slugs = [];
     try{
-      const res = await fetch('https://wargavi48.github.io/invitation/invitations/index.json', { cache: 'no-store' });
+      const url = new URL(INVITATION_URL);
+      const owner = url.hostname.split('.')[0];
+      const repo = url.pathname.split('/').filter(Boolean)[0] || 'invitation';
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/invitations`, { cache: 'no-store' });
       if (res.ok){
         const list = await res.json();
-        if (Array.isArray(list)) invOptions = list;
+        if (Array.isArray(list)){
+          slugs = list
+            .filter(f => f.name && f.name.endsWith('.json') && f.name !== 'index.json')
+            .map(f => f.name.replace(/\.json$/, ''));
+        }
       }
-    }catch(e){ /* folder tidak punya index.json — pakai daftar statis */ }
-    if (!invOptions.length){
-      // fallback: daftar dari config EVENT + undangan yang dikenal
-      const cfg = window.__INVITATION_CONFIG__ || {};
-      invOptions = ['maura-graduation'];
+    }catch(e){ /* GitHub API gagal — coba manifest */ }
+    if (!slugs.length){
+      try{
+        const res = await fetch('https://wargavi48.github.io/invitation/invitations/index.json', { cache: 'no-store' });
+        if (res.ok){
+          const list = await res.json();
+          if (Array.isArray(list)) slugs = list;
+        }
+      }catch(e){ /* tidak ada manifest — daftar kosong */ }
     }
+    invOptions = slugs;
     sel.innerHTML = '<option value="" data-i18n="invDefaultOption">— Default —</option>' +
       invOptions.map(s=> `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
     // terjemahkan opsi default
