@@ -654,6 +654,24 @@
     document.getElementById('listCount').textContent = total;
   }
 
+  // ---- Peta undangan per tamu — disimpan di browser (localStorage), bukan Supabase ----
+  const INV_MAP_KEY = 'guestInvitationMap';
+  function getInvMap(){
+    try{ return JSON.parse(localStorage.getItem(INV_MAP_KEY) || '{}'); }catch(e){ return {}; }
+  }
+  function saveInvMap(map){
+    try{ localStorage.setItem(INV_MAP_KEY, JSON.stringify(map)); }catch(e){}
+  }
+  function getInvForGuest(slug){
+    return getInvMap()[slug] || '';
+  }
+  function setInvForGuest(slug, invitation){
+    const map = getInvMap();
+    if (invitation) map[slug] = invitation;
+    else delete map[slug];
+    saveInvMap(map);
+  }
+
   function renderTable(guests){
     const wrap = document.getElementById('tableWrap');
     if (guests.length === 0){
@@ -661,7 +679,8 @@
       return;
     }
     const rows = guests.map(g=>{
-      const invParam = g.invitation ? `&inv=${encodeURIComponent(g.invitation)}` : '';
+      const invitation = getInvForGuest(g.slug);
+      const invParam = invitation ? `&inv=${encodeURIComponent(invitation)}` : '';
       const link = `${baseUrl}?to=${encodeURIComponent(g.slug)}${invParam}`;
       const status = g.opened_at
         ? `<span class="badge opened">${tr('badgeOpened')}</span>`
@@ -672,7 +691,7 @@
           <td>${g.max_guests}</td>
           <td>
             <div class="link-cell">
-              <code>${escapeHtml(g.slug)}${g.invitation ? ' <span class="inv-tag">' + escapeHtml(g.invitation) + '</span>' : ''}</code>
+              <code>${escapeHtml(g.slug)}${invitation ? ' <span class="inv-tag">' + escapeHtml(invitation) + '</span>' : ''}</code>
               <button class="copy-btn" data-link="${link}">${tr('copyBtn')}</button>
             </div>
           </td>
@@ -720,24 +739,21 @@
     const name = document.getElementById('inputName').value.trim();
     let slug = document.getElementById('inputSlug').value.trim();
     const maxGuests = parseInt(document.getElementById('inputMax').value, 10) || 1;
-    const invitation = document.getElementById('inputInvitation').value.trim() || null;
+    const invitation = document.getElementById('inputInvitation').value.trim() || '';
     if (!name){ toast(tr('nameRequired')); return; }
     if (!slug) slug = slugify(name);
     else slug = slugify(slug);
 
     const btn = document.getElementById('addBtn');
     btn.disabled = true;
-    const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests, invitation });
+    const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests });
     btn.disabled = false;
     if (error){
-      // Kolom "invitation" belum ada di tabel → beri pesan jelas
-      if (/invitation/i.test(error.message) && /column|schema/i.test(error.message)){
-        toast('Kolom "invitation" belum ada di tabel guests. Tambahkan dulu: ALTER TABLE guests ADD COLUMN invitation text;');
-        return;
-      }
       toast(error.code === '23505' ? tr('slugUsed') : tr('addFail') + error.message);
       return;
     }
+    // Simpan pilihan undangan di browser (localStorage), bukan di Supabase
+    setInvForGuest(slug, invitation);
     document.getElementById('inputName').value = '';
     document.getElementById('inputSlug').value = '';
     document.getElementById('inputMax').value = 2;
