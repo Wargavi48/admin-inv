@@ -60,6 +60,14 @@
         <button class="btn-primary" id="addBtn" data-i18n="addBtn">+ Tambah</button>
       </div>
     </div>
+    <div class="form-row" style="margin-top:12px;">
+      <div class="field">
+        <label data-i18n="labelInv">Undangan (opsional)</label>
+        <select id="inputInvitation">
+          <option value="" data-i18n="invDefaultOption">— Default —</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
@@ -368,7 +376,10 @@
       resetStatusConfirm: "Reset opened status for ALL guests? This cannot be undone.",
       resetStatusDone: "All guest statuses reset",
       resetStatusFail: "Failed to reset statuses: ",
-      resetStatusEmpty: "No guests to reset"
+      resetStatusEmpty: "No guests to reset",
+      labelInv: "Invitation (optional)",
+      invDefaultOption: "— Default —",
+      invLoadOptionsFail: "Failed to load invitations: "
     },
     id: {
       loginSub: "Masukkan password untuk mengelola daftar tamu",
@@ -471,7 +482,10 @@
       resetStatusConfirm: "Reset status dibuka untuk SEMUA tamu? Tindakan ini tidak bisa dibatalkan.",
       resetStatusDone: "Status semua tamu direset",
       resetStatusFail: "Gagal mereset status: ",
-      resetStatusEmpty: "Tidak ada tamu untuk direset"
+      resetStatusEmpty: "Tidak ada tamu untuk direset",
+      labelInv: "Undangan (opsional)",
+      invDefaultOption: "— Default —",
+      invLoadOptionsFail: "Gagal memuat undangan: "
     }
   };
 
@@ -538,6 +552,7 @@
     loginScreen.style.display = 'none';
     dashboard.style.display = '';
     refresh();
+    loadInvOptions();
   }
 
   function checkAuth(){
@@ -591,6 +606,34 @@
     return data || [];
   }
 
+  // ---- Muat daftar undangan dari folder invitations/ (repo invitation) ----
+  // Halaman admin tidak bisa membaca isi folder repo secara langsung, jadi coba
+  // ambil daftar dari file index (jika ada) atau dari daftar yang diketik manual.
+  // Pendekatan: coba fetch invitations/index.json (daftar slug) — kalau tidak ada,
+  // tampilkan pilihan dari daftar statis yang bisa diedit di config.
+  let invOptions = [];
+  async function loadInvOptions(){
+    const sel = document.getElementById('inputInvitation');
+    if (!sel) return;
+    try{
+      const res = await fetch('https://wargavi48.github.io/invitation/invitations/index.json', { cache: 'no-store' });
+      if (res.ok){
+        const list = await res.json();
+        if (Array.isArray(list)) invOptions = list;
+      }
+    }catch(e){ /* folder tidak punya index.json — pakai daftar statis */ }
+    if (!invOptions.length){
+      // fallback: daftar dari config EVENT + undangan yang dikenal
+      const cfg = window.__INVITATION_CONFIG__ || {};
+      invOptions = ['maura-graduation'];
+    }
+    sel.innerHTML = '<option value="" data-i18n="invDefaultOption">— Default —</option>' +
+      invOptions.map(s=> `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+    // terjemahkan opsi default
+    const defOpt = sel.querySelector('[data-i18n="invDefaultOption"]');
+    if (defOpt) defOpt.textContent = tr('invDefaultOption');
+  }
+
   function renderStats(guests){
     const total = guests.length;
     const opened = guests.filter(g=>g.opened_at).length;
@@ -607,7 +650,8 @@
       return;
     }
     const rows = guests.map(g=>{
-      const link = `${baseUrl}?to=${encodeURIComponent(g.slug)}`;
+      const invParam = g.invitation ? `&inv=${encodeURIComponent(g.invitation)}` : '';
+      const link = `${baseUrl}?to=${encodeURIComponent(g.slug)}${invParam}`;
       const status = g.opened_at
         ? `<span class="badge opened">${tr('badgeOpened')}</span>`
         : `<span class="badge pending">${tr('badgePending')}</span>`;
@@ -617,7 +661,7 @@
           <td>${g.max_guests}</td>
           <td>
             <div class="link-cell">
-              <code>${escapeHtml(g.slug)}</code>
+              <code>${escapeHtml(g.slug)}${g.invitation ? ' <span class="inv-tag">' + escapeHtml(g.invitation) + '</span>' : ''}</code>
               <button class="copy-btn" data-link="${link}">${tr('copyBtn')}</button>
             </div>
           </td>
@@ -665,13 +709,14 @@
     const name = document.getElementById('inputName').value.trim();
     let slug = document.getElementById('inputSlug').value.trim();
     const maxGuests = parseInt(document.getElementById('inputMax').value, 10) || 1;
+    const invitation = document.getElementById('inputInvitation').value.trim() || null;
     if (!name){ toast(tr('nameRequired')); return; }
     if (!slug) slug = slugify(name);
     else slug = slugify(slug);
 
     const btn = document.getElementById('addBtn');
     btn.disabled = true;
-    const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests });
+    const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests, invitation });
     btn.disabled = false;
     if (error){
       toast(error.code === '23505' ? tr('slugUsed') : tr('addFail') + error.message);
@@ -680,6 +725,7 @@
     document.getElementById('inputName').value = '';
     document.getElementById('inputSlug').value = '';
     document.getElementById('inputMax').value = 2;
+    document.getElementById('inputInvitation').value = '';
     toast(tr('toastAdded'));
     refresh();
   });
