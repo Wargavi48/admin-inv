@@ -730,6 +730,11 @@
     const { error } = await supabase.from('guests').insert({ name, slug, max_guests: maxGuests, invitation });
     btn.disabled = false;
     if (error){
+      // Kolom "invitation" belum ada di tabel → beri pesan jelas
+      if (/invitation/i.test(error.message) && /column|schema/i.test(error.message)){
+        toast('Kolom "invitation" belum ada di tabel guests. Tambahkan dulu: ALTER TABLE guests ADD COLUMN invitation text;');
+        return;
+      }
       toast(error.code === '23505' ? tr('slugUsed') : tr('addFail') + error.message);
       return;
     }
