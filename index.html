@@ -85,7 +85,10 @@
           </div>
           <div class="field">
             <label data-i18n="invCategory">Kategori (pill)</label>
-            <input id="invInputCategory" placeholder="Graduation / Wisuda" />
+            <div class="lang-pair">
+              <input id="invInputCategoryEn" placeholder="EN: Graduation" />
+              <input id="invInputCategoryId" placeholder="ID: Wisuda" />
+            </div>
           </div>
         </div>
         <div class="form-row">
@@ -101,13 +104,19 @@
         <div class="form-row">
           <div class="field">
             <label data-i18n="invDefaultGuest">Nama tamu default</label>
-            <input id="invInputDefaultGuest" placeholder="Tamu Undangan" />
+            <div class="lang-pair">
+              <input id="invInputDefaultGuestEn" placeholder="EN: Guest" />
+              <input id="invInputDefaultGuestId" placeholder="ID: Tamu Undangan" />
+            </div>
           </div>
         </div>
         <div class="form-row">
           <div class="field">
             <label data-i18n="invEventName">Nama acara</label>
-            <input id="invInputEventName" placeholder="Graduation of Maura Nilambari" />
+            <div class="lang-pair">
+              <input id="invInputEventNameEn" placeholder="EN: Graduation of Maura Nilambari" />
+              <input id="invInputEventNameId" placeholder="ID: Wisuda Maura Nilambari" />
+            </div>
           </div>
           <div class="field">
             <label data-i18n="invHonoree">Nama yang dirayakan</label>
@@ -117,25 +126,37 @@
         <div class="form-row">
           <div class="field">
             <label data-i18n="invGreeting">Kalimat pembuka</label>
-            <input id="invInputGreeting" placeholder="You are warmly invited to attend..." />
+            <div class="lang-pair">
+              <input id="invInputGreetingEn" placeholder="EN: You are warmly invited to attend..." />
+              <input id="invInputGreetingId" placeholder="ID: Dengan hangat kami mengundang Anda..." />
+            </div>
           </div>
         </div>
         <div class="form-row">
           <div class="field">
             <label data-i18n="invGreetingAfter">Kalimat setelah nama</label>
-            <input id="invInputGreetingAfter" placeholder="As a valued part of this community..." />
+            <div class="lang-pair">
+              <input id="invInputGreetingAfterEn" placeholder="EN: As a valued part of this community..." />
+              <input id="invInputGreetingAfterId" placeholder="ID: Sebagai bagian berharga dari komunitas ini..." />
+            </div>
           </div>
         </div>
         <div class="form-row">
           <div class="field">
             <label data-i18n="invClosing">Kalimat penutup</label>
-            <input id="invInputClosing" placeholder="Let us gather one final time..." />
+            <div class="lang-pair">
+              <input id="invInputClosingEn" placeholder="EN: Let us gather one final time..." />
+              <input id="invInputClosingId" placeholder="ID: Mari berkumpul untuk terakhir kalinya..." />
+            </div>
           </div>
         </div>
         <div class="form-row">
           <div class="field">
             <label data-i18n="invDate">Tanggal</label>
-            <input id="invInputDate" placeholder="Sunday, 9 August 2026" />
+            <div class="lang-pair">
+              <input id="invInputDateEn" placeholder="EN: Sunday, 9 August 2026" />
+              <input id="invInputDateId" placeholder="ID: Minggu, 9 Agustus 2026" />
+            </div>
           </div>
           <div class="field">
             <label data-i18n="invTime">Waktu</label>
@@ -145,7 +166,10 @@
         <div class="form-row">
           <div class="field">
             <label data-i18n="invPlace">Tempat / platform</label>
-            <input id="invInputPlace" placeholder="YouTube - Maura Nilambari - JKT48V" />
+            <div class="lang-pair">
+              <input id="invInputPlaceEn" placeholder="EN: YouTube - Maura Nilambari - JKT48V" />
+              <input id="invInputPlaceId" placeholder="ID: YouTube - Maura Nilambari - JKT48V" />
+            </div>
           </div>
           <div class="field">
             <label data-i18n="invPlaceUrl">Link tempat</label>
@@ -657,6 +681,15 @@
     if (bgImage) theme.backgroundImage = bgImage;
     else if (bgColor && bgColor !== '#ffffff') theme.backgroundColor = bgColor;
     const fonts = document.getElementById('invInputFonts').value.split(',').map(s=>s.trim()).filter(Boolean);
+
+    // Field terjemahan EN/ID — disimpan sebagai objek i18n di JSON
+    const pair = (enId, idId) => {
+      const en = document.getElementById(enId).value.trim();
+      const id = document.getElementById(idId).value.trim();
+      if (!en && !id) return undefined;
+      return { en: en || undefined, id: id || undefined };
+    };
+
     const data = {
       hostTag: document.getElementById('invInputHostTag').value.trim() || undefined,
       brandTag: document.getElementById('invInputBrandTag').value.trim() || undefined,
@@ -664,18 +697,27 @@
       hostLogoHeight: num('invInputHostLogoH'),
       brandLogoUrl: document.getElementById('invInputBrandLogo').value.trim() || undefined,
       brandLogoHeight: num('invInputBrandLogoH'),
-      category: document.getElementById('invInputCategory').value.trim() || undefined,
-      eventName: document.getElementById('invInputEventName').value.trim() || undefined,
-      hostGreeting: document.getElementById('invInputGreeting').value.trim() || undefined,
       honoreeName: document.getElementById('invInputHonoree').value.trim() || undefined,
-      hostGreetingAfter: document.getElementById('invInputGreetingAfter').value.trim() || undefined,
-      date: document.getElementById('invInputDate').value.trim() || undefined,
       time: document.getElementById('invInputTime').value.trim() || undefined,
-      place: document.getElementById('invInputPlace').value.trim() || undefined,
-      placeMapUrl: document.getElementById('invInputPlaceUrl').value.trim() || undefined,
-      closingMessage: document.getElementById('invInputClosing').value.trim() || undefined,
-      defaultGuestName: document.getElementById('invInputDefaultGuest').value.trim() || undefined
+      placeMapUrl: document.getElementById('invInputPlaceUrl').value.trim() || undefined
     };
+    // Field yang punya terjemahan EN/ID
+    const i18n = {};
+    const i18nPairs = {
+      category: ['invInputCategoryEn','invInputCategoryId'],
+      eventName: ['invInputEventNameEn','invInputEventNameId'],
+      hostGreeting: ['invInputGreetingEn','invInputGreetingId'],
+      hostGreetingAfter: ['invInputGreetingAfterEn','invInputGreetingAfterId'],
+      closingMessage: ['invInputClosingEn','invInputClosingId'],
+      date: ['invInputDateEn','invInputDateId'],
+      place: ['invInputPlaceEn','invInputPlaceId'],
+      defaultGuestName: ['invInputDefaultGuestEn','invInputDefaultGuestId']
+    };
+    Object.keys(i18nPairs).forEach(key=>{
+      const p = pair(i18nPairs[key][0], i18nPairs[key][1]);
+      if (p) i18n[key] = p;
+    });
+    if (Object.keys(i18n).length) data.i18n = i18n;
     if (fonts.length) data.fonts = fonts;
     if (Object.keys(theme).length) data.theme = theme;
     // buang field undefined
@@ -712,10 +754,11 @@
   }
 
   function resetInvForm(){
-    ['invInputSlug','invInputCategory','invInputEventName','invInputHonoree','invInputGreeting',
-     'invInputGreetingAfter','invInputClosing','invInputDate','invInputTime','invInputPlace',
-     'invInputPlaceUrl','invInputHostLogo','invInputHostLogoH','invInputBrandLogo','invInputBrandLogoH',
-     'invInputFonts','invInputHostTag','invInputBrandTag','invInputDefaultGuest','invInputBgImage'].forEach(id=>{
+    ['invInputSlug','invInputCategoryEn','invInputCategoryId','invInputEventNameEn','invInputEventNameId',
+     'invInputHonoree','invInputGreetingEn','invInputGreetingId','invInputGreetingAfterEn','invInputGreetingAfterId',
+     'invInputClosingEn','invInputClosingId','invInputDateEn','invInputDateId','invInputTime','invInputPlaceEn',
+     'invInputPlaceId','invInputPlaceUrl','invInputHostLogo','invInputHostLogoH','invInputBrandLogo','invInputBrandLogoH',
+     'invInputFonts','invInputHostTag','invInputBrandTag','invInputDefaultGuestEn','invInputDefaultGuestId','invInputBgImage'].forEach(id=>{
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
@@ -745,10 +788,11 @@
   document.getElementById('invDownloadBtn').addEventListener('click', downloadInvJson);
   document.getElementById('invCopyBtn').addEventListener('click', copyInvJson);
   document.getElementById('invCancelBtn').addEventListener('click', resetInvForm);
-  ['invInputSlug','invInputCategory','invInputEventName','invInputHonoree','invInputGreeting',
-   'invInputGreetingAfter','invInputClosing','invInputDate','invInputTime','invInputPlace',
-   'invInputPlaceUrl','invInputHostLogo','invInputHostLogoH','invInputBrandLogo','invInputBrandLogoH',
-   'invInputFonts','invInputHostTag','invInputBrandTag','invInputDefaultGuest','invInputBgImage'].forEach(id=>{
+  ['invInputSlug','invInputCategoryEn','invInputCategoryId','invInputEventNameEn','invInputEventNameId',
+   'invInputHonoree','invInputGreetingEn','invInputGreetingId','invInputGreetingAfterEn','invInputGreetingAfterId',
+   'invInputClosingEn','invInputClosingId','invInputDateEn','invInputDateId','invInputTime','invInputPlaceEn',
+   'invInputPlaceId','invInputPlaceUrl','invInputHostLogo','invInputHostLogoH','invInputBrandLogo','invInputBrandLogoH',
+   'invInputFonts','invInputHostTag','invInputBrandTag','invInputDefaultGuestEn','invInputDefaultGuestId','invInputBgImage'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', renderInvPreview);
   });

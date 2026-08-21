@@ -130,6 +130,10 @@
   .inv-form{ margin-top:12px; }
   .inv-form .form-row{ margin-bottom:12px; }
   .inv-form input[type="color"]{ padding:4px; height:42px; cursor:pointer; }
+  .lang-pair{ display:flex; flex-direction:column; gap:6px; }
+  .lang-pair input{ font-size:13px; }
+  .lang-pair input:first-child{ border-color:rgba(240,220,180,0.28); }
+  .lang-pair input:last-child{ border-color:rgba(127,191,127,0.35); }
 
   .inv-json-preview{ margin-top:14px; }
   .inv-json-preview label{ font-size:12px; color:var(--muted); margin-bottom:5px; display:block; }
